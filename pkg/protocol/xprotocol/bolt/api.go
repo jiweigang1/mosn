@@ -24,7 +24,7 @@ func NewRpcRequest(requestId uint32, headers types.HeaderMap, data types.IoBuffe
 	request := &Request{
 		RequestHeader: RequestHeader{
 			Protocol:  ProtocolCode,
-			CmdType:   CmdTypeRequest,
+			CmdType:   CmdTypeRequest,//默认请求类型，也有可能是单向请求
 			CmdCode:   CmdCodeRpcRequest,
 			Version:   ProtocolVersion,
 			RequestId: requestId,
