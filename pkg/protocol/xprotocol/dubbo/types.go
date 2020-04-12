@@ -23,6 +23,7 @@ const (
 
 // dubbo protocol
 const (
+	//应该读取的Header长度，如果读取的长度小于这个值，需要等取更多的值才可以进行匹配。
 	HeaderLen   = 16
 	IdLen       = 8
 	MagicIdx    = 0
