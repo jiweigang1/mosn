@@ -18,7 +18,7 @@
 package bolt
 
 import "mosn.io/mosn/pkg/types"
-
+// 创建 bolt的请求信息，请求信息的话包含两部分内容，header 和 content
 // NewRpcRequest is a utility function which build rpc Request object of bolt protocol.
 func NewRpcRequest(requestId uint32, headers types.HeaderMap, data types.IoBuffer) *Request {
 	request := &Request{
@@ -47,7 +47,7 @@ func NewRpcRequest(requestId uint32, headers types.HeaderMap, data types.IoBuffe
 	}
 	return request
 }
-
+//创建rpc的响应信息，响应信息和请求信息类似包含 header 和 content 内容
 // NewRpcResponse is a utility function which build rpc Response object of bolt protocol.
 func NewRpcResponse(requestId uint32, statusCode uint16, headers types.HeaderMap, data types.IoBuffer) *Response {
 	response := &Response{
