@@ -16,7 +16,7 @@
  */
 
 package bolt
-
+//协议的常量信息
 import (
 	"errors"
 	"time"
