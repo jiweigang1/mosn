@@ -16,7 +16,7 @@
  */
 
 package xprotocol
-
+// 协议的注册工厂
 import (
 	"errors"
 
@@ -25,6 +25,7 @@ import (
 
 var (
 	protocolMap = make(map[types.ProtocolName]XProtocol)
+	//协议的匹配函数 协议名称 和 协议匹配函数
 	matcherMap  = make(map[types.ProtocolName]types.ProtocolMatch)
 )
 
@@ -46,18 +47,21 @@ func GetProtocol(name types.ProtocolName) XProtocol {
 }
 
 // RegisterMatcher register the matcher of the protocol into factory
+// 注册匹配函数
 func RegisterMatcher(name types.ProtocolName, matcher types.ProtocolMatch) error {
 	// check name conflict
+	//判断是否已经进行了注册，如果已经进行了注册，返回注册的异常
 	_, ok := matcherMap[name]
 	if ok {
 		return errors.New("duplicate matcher register:" + string(name))
 	}
-
+	//放入到 map 中
 	matcherMap[name] = matcher
 	return nil
 }
 
 // GetMatcher return the corresponding matcher for given name(if was registered)
+// 根据协议的名称返回匹配的函数
 func GetMatcher(name types.ProtocolName) types.ProtocolMatch {
 	return matcherMap[name]
 }
