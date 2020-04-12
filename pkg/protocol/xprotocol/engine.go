@@ -35,22 +35,28 @@ type XEngine struct {
 }
 
 // Match use registered matchFunc to recognize corresponding protocol
+//执行所有的匹配函数进行匹配
 func (engine *XEngine) Match(ctx context.Context, data types.IoBuffer) (types.Protocol, types.MatchResult) {
+	//默认无需进行 重新匹配
 	again := false
-
+	//遍历所有的注册函数进行匹配
 	for idx := range engine.protocols {
 		result := engine.protocols[idx].matchFunc(data.Bytes())
-
+		//如果匹配成功，直接返回匹配的协议	
 		if result == types.MatchSuccess {
 			return engine.protocols[idx].protocol, result
+		//如果返回需要重新匹配，暂时进行标示
 		} else if result == types.MatchAgain {
 			again = true
 		}
 	}
 
 	// match not success, return failed if all failed; otherwise return again
+	// 如果没有匹配成功，但是又重新匹配返回，返回重新匹配状态
+	// 需要重新匹配的原因当前读取的字节数量太少，不足于进行匹配
 	if again {
 		return nil, types.MatchAgain
+	//如果不需要重新匹配返回匹配失败	
 	} else {
 		return nil, types.MatchFailed
 	}
