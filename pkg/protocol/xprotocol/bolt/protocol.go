@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// bolt 协议解析
 package bolt
 
 import (
@@ -73,7 +73,7 @@ type boltProtocol struct{}
 func (proto *boltProtocol) Name() types.ProtocolName {
 	return ProtocolName
 }
-
+// 进行编码
 func (proto *boltProtocol) Encode(ctx context.Context, model interface{}) (types.IoBuffer, error) {
 	switch frame := model.(type) {
 	case *Request:
@@ -85,7 +85,7 @@ func (proto *boltProtocol) Encode(ctx context.Context, model interface{}) (types
 		return nil, xprotocol.ErrUnknownType
 	}
 }
-
+//进行解码
 func (proto *boltProtocol) Decode(ctx context.Context, data types.IoBuffer) (interface{}, error) {
 	if data.Len() >= LessLen {
 		cmdType := data.Bytes()[1]
