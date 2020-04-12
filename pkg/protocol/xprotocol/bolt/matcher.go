@@ -21,21 +21,25 @@ import (
 	"mosn.io/mosn/pkg/protocol/xprotocol"
 	"mosn.io/mosn/pkg/types"
 )
-
+//注册协议的类型
 func init() {
+	//注册协议的类型，名称和匹配的函数
 	xprotocol.RegisterMatcher(ProtocolName, boltMatcher)
-}
-
+} 
 // predicate first byte '0x1'
+
+//根据预先读取的字节进行匹配
 func boltMatcher(data []byte) types.MatchResult {
+	//获取读取字节的长度
 	length := len(data)
+	//如果长度为0 证明还没有对到有效数据，需要进行重新匹配
 	if length == 0 {
 		return types.MatchAgain
 	}
-
+	//bolt 协议通过第一个字节就可以判断出来，如果匹配返回匹配成功
 	if data[0] == ProtocolCode {
 		return types.MatchSuccess
 	}
-
+	//返回匹配失败
 	return types.MatchFailed
 }
