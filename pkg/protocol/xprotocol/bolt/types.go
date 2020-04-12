@@ -27,6 +27,7 @@ import (
 
 // bolt constants
 const (
+	// 协议名称
 	ProtocolName    types.ProtocolName = "bolt" // protocol
 	ProtocolCode    byte               = 1
 	ProtocolVersion byte               = 1
