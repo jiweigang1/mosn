@@ -16,7 +16,7 @@
  */
 
 package bolt
-
+//负责协议解码，解码包含请求解码和响应解码
 import (
 	"context"
 	"encoding/binary"
@@ -28,12 +28,14 @@ import (
 	"mosn.io/mosn/pkg/types"
 	"mosn.io/pkg/buffer"
 )
-
+//解码请求信息
 func decodeRequest(ctx context.Context, data types.IoBuffer, oneway bool) (cmd interface{}, err error) {
+	//获取请求的长度
 	bytesLen := data.Len()
+	//获取请求的字节信息
 	bytes := data.Bytes()
 
-	// 1. least bytes to decode header is RequestHeaderLen(22)
+	//如果字节的内容不是完整内容，返回 1. least bytes to decode header is RequestHeaderLen(22)
 	if bytesLen < RequestHeaderLen {
 		return
 	}
@@ -52,12 +54,13 @@ func decodeRequest(ctx context.Context, data types.IoBuffer, oneway bool) (cmd i
 	// 3. decode header
 	buf := bufferByContext(ctx)
 	request := &buf.request
-
+	//默认设置为请求
 	cmdType := CmdTypeRequest
+	//如果是单项的请求，设置为单项请求方式
 	if oneway {
 		cmdType = CmdTypeRequestOneway
 	}
-
+	// 解码请求的 header
 	request.RequestHeader = RequestHeader{
 		Protocol:   ProtocolCode,
 		CmdType:    cmdType,
@@ -98,7 +101,7 @@ func decodeRequest(ctx context.Context, data types.IoBuffer, oneway bool) (cmd i
 	}
 	return request, err
 }
-
+//解码响应信息
 func decodeResponse(ctx context.Context, data types.IoBuffer) (cmd interface{}, err error) {
 	bytesLen := data.Len()
 	bytes := data.Bytes()
