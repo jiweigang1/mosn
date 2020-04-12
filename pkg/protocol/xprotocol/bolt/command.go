@@ -23,6 +23,7 @@ import (
 )
 
 // RequestHeader is the header part of bolt v1 request
+//请求的header
 type RequestHeader struct {
 	Protocol   byte // meta fields
 	CmdType    byte
@@ -51,6 +52,7 @@ func (h *RequestHeader) Clone() types.HeaderMap {
 }
 
 // Request is the cmd struct of bolt v1 request
+//请求 
 type Request struct {
 	RequestHeader
 
