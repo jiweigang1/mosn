@@ -186,7 +186,7 @@ func (el *eventLoop) unregisterWrite(id uint64) {
 		el.mu.Unlock()
 	}
 }
-
+//放到线程池中读取数据，可以控制并发量
 func (el *eventLoop) readWrapper(desc *netpoll.Desc, handler *connEventHandler) func(netpoll.Event) {
 	return func(e netpoll.Event) {
 		// No more calls will be made for conn until we call epoll.Resume().
