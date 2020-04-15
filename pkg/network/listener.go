@@ -93,7 +93,7 @@ func (l *listener) Name() string {
 func (l *listener) Addr() net.Addr {
 	return l.localAddress
 }
-
+//开启服务监听
 func (l *listener) Start(lctx context.Context, restart bool) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -105,11 +105,14 @@ func (l *listener) Start(lctx context.Context, restart bool) {
 		ignore := func() bool {
 			l.mutex.Lock()
 			defer l.mutex.Unlock()
+
 			switch l.state {
+			// 如果是运行状态，无需再启动直接返回
 			case ListenerRunning:
 				// if listener is running, ignore start
 				log.DefaultLogger.Debugf("[network] [listener start] %s is running", l.name)
 				return true
+			//如果是被停止状态，进行重新监听，相当于重启的操作
 			case ListenerStopped:
 				if !restart {
 					return true
@@ -124,6 +127,7 @@ func (l *listener) Start(lctx context.Context, restart bool) {
 				// try start listener
 				//call listen if not inherit
 				if l.rawl == nil {
+					// 进行服务监听
 					if err := l.listen(lctx); err != nil {
 						// TODO: notify listener callbacks
 						log.StartLogger.Fatalf("[network] [listener start] [listen] %s listen failed, %v", l.name, err)
@@ -225,15 +229,17 @@ func (l *listener) listen(lctx context.Context) error {
 
 	return nil
 }
-
+// 接受请求
 func (l *listener) accept(lctx context.Context) error {
+	// 获取请求的连接
 	rawc, err := l.rawl.Accept()
-
+	//如果获取请求连接错误，返回错误信息
 	if err != nil {
 		return err
 	}
 
 	// TODO: use thread pool
+	// 使用线程池获取请求连接的内容
 	utils.GoWithRecover(func() {
 		l.cb.OnAccept(rawc, l.useOriginalDst, nil, nil, nil)
 	}, nil)

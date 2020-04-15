@@ -123,6 +123,7 @@ func (sc *streamConn) CheckReasonError(connected bool, event api.ConnectionEvent
 
 // types.StreamConnection
 func (sc *streamConn) Dispatch(buf types.IoBuffer) {
+	//如果协议还没有识别，进行协议的识别
 	// match if multi protocol used
 	if sc.protocol == nil {
 		// 1. try to get ALPN negotiated protocol
@@ -138,6 +139,7 @@ func (sc *streamConn) Dispatch(buf types.IoBuffer) {
 		}
 
 		// 2. recognize data
+		// 获取匹配的协议
 		proto, result := sc.engine.Match(sc.ctx, buf)
 		switch result {
 		case types.MatchSuccess:
@@ -159,6 +161,7 @@ func (sc *streamConn) Dispatch(buf types.IoBuffer) {
 	}
 
 	// decode frames
+	// 如果协议匹配成功
 	for {
 		// 1. get stream-level ctx with bufferCtx
 		streamCtx := sc.ctxManager.Get()
@@ -167,6 +170,8 @@ func (sc *streamConn) Dispatch(buf types.IoBuffer) {
 		frame, err := sc.protocol.Decode(streamCtx, buf)
 
 		// 2.1 no enough data, break loop
+		// 识别协议后如果读取的字节不够一个桢的数据是没有办法解码的，会返回nil，
+		// 如果解码没有完成，直接返回，等待下次读取数据的时候再进行解码。
 		if frame == nil && err == nil {
 			return
 		}

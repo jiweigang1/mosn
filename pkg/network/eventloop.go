@@ -104,7 +104,9 @@ func (el *eventLoop) register(conn *connection, handler *connEventHandler) error
 	el.mu.Unlock()
 	return nil
 }
-
+/**
+  注册读取字节的 事件处理器
+ */
 func (el *eventLoop) registerRead(conn *connection, handler *connEventHandler) error {
 	// handle read
 	read, err := netpoll.HandleFile(conn.file, netpoll.EventRead|netpoll.EventOneShot)

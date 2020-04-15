@@ -188,6 +188,7 @@ func (c *connection) attachEventLoop(lctx context.Context) {
 	err := c.eventLoop.registerRead(c, &connEventHandler{
 		onRead: func() bool {
 			if c.readEnabled {
+				// 进行字节的读取
 				err := c.doRead()
 
 				if err != nil {
@@ -477,7 +478,7 @@ func (c *connection) updateReadBufStats(bytesRead int64, bytesBufSize int64) {
 		c.lastBytesSizeRead = bytesBufSize
 	}
 }
-
+//  当读取字节的时候 调用
 func (c *connection) onRead() {
 	if !c.readEnabled {
 		return

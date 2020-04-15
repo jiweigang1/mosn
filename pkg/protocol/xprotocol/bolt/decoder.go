@@ -43,9 +43,11 @@ func decodeRequest(ctx context.Context, data types.IoBuffer, oneway bool) (cmd i
 	// 2. least bytes to decode whole frame
 	classLen := binary.BigEndian.Uint16(bytes[14:16])
 	headerLen := binary.BigEndian.Uint16(bytes[16:18])
+	//获取 content 的长度
 	contentLen := binary.BigEndian.Uint32(bytes[18:22])
-
+	// 一个桢的总长度
 	frameLen := RequestHeaderLen + int(classLen) + int(headerLen) + int(contentLen)
+	// 如果小于一个桢的长度，直接返回，等待下次的读取
 	if bytesLen < frameLen {
 		return
 	}
@@ -95,6 +97,7 @@ func decodeRequest(ctx context.Context, data types.IoBuffer, oneway bool) (cmd i
 		request.rawHeader = request.rawData[headerIndex:contentIndex]
 		err = xprotocol.DecodeHeader(request.rawHeader, &request.Header)
 	}
+	// 如果 content 的长度大于零 需要解析 请求 body的内容
 	if contentLen > 0 {
 		request.rawContent = request.rawData[contentIndex:]
 		request.Content = buffer.NewIoBufferBytes(request.rawContent)

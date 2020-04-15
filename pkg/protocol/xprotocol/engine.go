@@ -85,7 +85,7 @@ func NewXEngine(protocols []string) (*XEngine, error) {
 	for idx := range protocols {
 		name := protocols[idx]
 
-		// get protocol
+		// get protocolFf
 		protocol := GetProtocol(types.ProtocolName(name))
 		if protocol == nil {
 			return nil, errors.New("no such protocol:" + name)

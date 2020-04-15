@@ -136,6 +136,7 @@ func NewProxy(ctx context.Context, config *v2.Proxy) Proxy {
 }
 
 func (p *proxy) OnData(buf buffer.IoBuffer) api.FilterStatus {
+	// 如果 serverStreamConn 还没有进行初始化进行初始化
 	if p.serverStreamConn == nil {
 		var prot string
 		if conn, ok := p.readCallbacks.Connection().RawConn().(*mtls.TLSConn); ok {
