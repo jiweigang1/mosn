@@ -104,7 +104,7 @@ type workerPool struct {
 	work chan func()
 	sem  chan struct{}
 }
-
+//创建一个协程池
 // NewWorkerPool create a worker pool
 func NewWorkerPool(size int) WorkerPool {
 	return &workerPool{
@@ -112,10 +112,12 @@ func NewWorkerPool(size int) WorkerPool {
 		sem:  make(chan struct{}, size),
 	}
 }
-
+//放到线程池中执行任务
 func (p *workerPool) Schedule(task func()) {
 	select {
-	case p.work <- task:
+	//放入到work chan中
+	case p.work <- task 
+	//如果当前还有未执行的任务，计数加1开启一个信的协程执行任务
 	case p.sem <- struct{}{}:
 		go p.spawnWorker(task)
 	}
