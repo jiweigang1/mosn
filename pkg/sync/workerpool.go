@@ -159,16 +159,19 @@ func (p *workerPool) ScheduleAuto(task func()) {
 		}, nil)
 	}
 }
-
+//通过协程执行task
 func (p *workerPool) spawnWorker(task func()) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.DefaultLogger.Errorf("[syncpool] panic %v\n%s", p, string(debug.Stack()))
 		}
+		//如果协程结束，协程计数器减去1，实际商死循环，只能异常退出？
 		<-p.sem
 	}()
 	for {
+		//执行任务
 		task()
+		//从任务池获取任务
 		task = <-p.work
 	}
 }
