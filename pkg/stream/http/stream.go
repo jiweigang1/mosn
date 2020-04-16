@@ -60,6 +60,7 @@ var (
 
 	minMethodLengh = len("GET")
 	maxMethodLengh = len("CONNECT")
+	//请求行以一个方法符号开头，以空格分开，后面跟着请求的URI和协议的版本，解析请求的方法来匹配协议
 	//http的方法，用于进行匹配，应该是有些风险，可以攻击mosn
 	httpMethod     = map[string]struct{}{
 		"OPTIONS": {},
