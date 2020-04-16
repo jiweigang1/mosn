@@ -51,10 +51,12 @@ type WorkerPool interface {
 
 	// Schedule try to acquire pooled worker goroutine to execute the specified task,
 	// this method would block if no worker goroutine is available
+	// 尝试从协程池钟获取协程执行task，如果当前协程都处于工作状态，无法获取，此方法将会阻塞。
 	Schedule(task func())
 
 	// Schedule try to acquire pooled worker goroutine to execute the specified task first,
 	// but would not block if no worker goroutine is available. A temp goroutine will be created for task execution.
+	// 尝试从协程池中获取协程执行task，如果所有的协程处于工作状态，会启动一个临时的协程运行task，此方法不会阻塞。
 	ScheduleAlways(task func())
 
 	ScheduleAuto(task func())
