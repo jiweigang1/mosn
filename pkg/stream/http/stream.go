@@ -60,6 +60,7 @@ var (
 
 	minMethodLengh = len("GET")
 	maxMethodLengh = len("CONNECT")
+	//http的方法，用于进行匹配，应该是有些风险，可以攻击mosn
 	httpMethod     = map[string]struct{}{
 		"OPTIONS": {},
 		"GET":     {},
@@ -89,15 +90,19 @@ func (f *streamConnFactory) CreateBiDirectStream(context context.Context, connec
 	serverCallbacks types.ServerStreamConnectionEventListener) types.ClientStreamConnection {
 	return nil
 }
-
+//协议匹配
 func (f *streamConnFactory) ProtocolMatch(context context.Context, prot string, magic []byte) error {
+	//如果小于读取的最小字节，等待重新读取
 	if len(magic) < minMethodLengh {
 		return str.EAGAIN
 	}
+	//获取读取的字节长度
 	size := len(magic)
+	//如果长度大于需要的长度，截取需要的长度
 	if len(magic) > maxMethodLengh {
 		size = maxMethodLengh
 	}
+	//从字节0位置开始匹配
 
 	for i := minMethodLengh; i <= size; i++ {
 		if _, ok := httpMethod[string(magic[0:i])]; ok {
