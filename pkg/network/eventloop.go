@@ -32,7 +32,11 @@ var (
 	UseNetpollMode = false
 
 	// read/write goroutine pool
+	//读写分别使用不通的协程池，写的操作和读的操作在处理上的方式不一样
+	
+	//创建读的协程池
 	readPool  = mosnsync.NewWorkerPool(runtime.NumCPU())
+	//创建写的协程池
 	writePool = mosnsync.NewWorkerPool(runtime.NumCPU())
 
 	rrCounter                 uint32
@@ -196,6 +200,7 @@ func (el *eventLoop) readWrapper(desc *netpoll.Desc, handler *connEventHandler) 
 				return
 			}
 		}
+		//读的事件处理放到协程池中处理
 		readPool.Schedule(func() {
 			if !handler.onRead() {
 				return
