@@ -112,7 +112,7 @@ func NewWorkerPool(size int) WorkerPool {
 		sem:  make(chan struct{}, size),
 	}
 }
-//放到线程池中执行任务
+//放到线程池中执行任务，协程池没有初始化，第一个task有可能不会启动task？
 func (p *workerPool) Schedule(task func()) {
 	select {
 	//放入到work chan中
