@@ -587,7 +587,7 @@ func (c *connection) writeDirectly(buf *[]buffer.IoBuffer) (err error) {
 
 	return nil
 }
-
+//开启服务端对外输出的循环
 func (c *connection) startWriteLoop() {
 	var needTransfer bool
 	defer func() {
