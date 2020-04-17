@@ -21,10 +21,13 @@ import (
 	"mosn.io/api"
 	"mosn.io/pkg/buffer"
 )
-
+//管理所有的过滤器
 type filterManager struct {
+	//负责处理 serverconnection的读取数据？
 	upstreamFilters   []*activeReadFilter
+	//负责处理下游的请求？
 	downstreamFilters []api.WriteFilter
+	// ServerConnection 接受到请求的 链接
 	conn              api.Connection
 	host              api.HostInfo
 }
@@ -73,7 +76,7 @@ func (fm *filterManager) InitializeReadFilters() bool {
 	fm.onContinueReading(nil)
 	return true
 }
-
+// 处理数据的读取
 func (fm *filterManager) onContinueReading(filter *activeReadFilter) {
 	var index int
 	var uf *activeReadFilter
@@ -81,7 +84,7 @@ func (fm *filterManager) onContinueReading(filter *activeReadFilter) {
 	if filter != nil {
 		index = filter.index + 1
 	}
-
+	//遍历所有的过滤器进行数据的分发
 	for ; index < len(fm.upstreamFilters); index++ {
 		uf = fm.upstreamFilters[index]
 		uf.index = index
@@ -95,10 +98,11 @@ func (fm *filterManager) onContinueReading(filter *activeReadFilter) {
 				return
 			}
 		}
-
+		//获取conn 中读取的数据
 		buf := fm.conn.GetReadBuffer()
 
 		if buf != nil && buf.Len() > 0 {
+			// 执行数据的处理
 			status := uf.filter.OnData(buf)
 
 			if status == api.Stop {
@@ -108,7 +112,7 @@ func (fm *filterManager) onContinueReading(filter *activeReadFilter) {
 		}
 	}
 }
-
+// 当有数据数据读取的时候，进行调用
 func (fm *filterManager) OnRead() {
 	fm.onContinueReading(nil)
 }
