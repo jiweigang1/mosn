@@ -136,12 +136,13 @@ func NewProxy(ctx context.Context, config *v2.Proxy) Proxy {
 }
 
 func (p *proxy) OnData(buf buffer.IoBuffer) api.FilterStatus {
-	// 如果 serverStreamConn 还没有进行初始化进行初始化
+	// 如果 serverStreamConn 还没有进行初始化进行初始化，首先需要识别字节的协议类型
 	if p.serverStreamConn == nil {
 		var prot string
 		if conn, ok := p.readCallbacks.Connection().RawConn().(*mtls.TLSConn); ok {
 			prot = conn.ConnectionState().NegotiatedProtocol
 		}
+                //选择协议
 		protocol, err := stream.SelectStreamFactoryProtocol(p.context, prot, buf.Bytes())
 		if err == stream.EAGAIN {
 			return api.Stop
@@ -157,8 +158,11 @@ func (p *proxy) OnData(buf buffer.IoBuffer) api.FilterStatus {
 			return api.Stop
 		}
 		log.DefaultLogger.Debugf("[proxy] Protoctol Auto: %v", protocol)
+                 
+                //根据选择的协议创建链接
 		p.serverStreamConn = stream.CreateServerStreamConnection(p.context, protocol, p.readCallbacks.Connection(), p)
 	}
+        //分发数据
 	p.serverStreamConn.Dispatch(buf)
 
 	return api.Stop
