@@ -28,7 +28,7 @@ type filterManager struct {
 	conn              api.Connection
 	host              api.HostInfo
 }
-
+//创建一个 filterManager
 func newFilterManager(conn api.Connection) api.FilterManager {
 	return &filterManager{
 		conn:              conn,
@@ -36,7 +36,7 @@ func newFilterManager(conn api.Connection) api.FilterManager {
 		downstreamFilters: make([]api.WriteFilter, 0, 8),
 	}
 }
-
+//添加一个读的 filter 
 func (fm *filterManager) AddReadFilter(rf api.ReadFilter) {
 	newArf := &activeReadFilter{
 		filter:        rf,
