@@ -107,6 +107,7 @@ type connection struct {
 }
 
 // NewServerConnection new server-side connection, rawc is the raw connection from go/net
+//创建一个服务端的链接，处理接收到的请求
 func NewServerConnection(ctx context.Context, rawc net.Conn, stopChan chan struct{}) api.Connection {
 	id := atomic.AddUint64(&idCounter, 1)
 
@@ -428,8 +429,7 @@ func (c *connection) doRead() (err error) {
 	}
 
 	var bytesRead int64
-	//从链接中读取数据
-
+	//从链接中读取数据，获取一个buffer的数据
 	bytesRead, err = c.readBuffer.ReadOnce(c.rawConnection)
 
 	if err != nil {
@@ -458,6 +458,7 @@ func (c *connection) doRead() (err error) {
 	for _, cb := range c.bytesReadCallbacks {
 		cb(uint64(bytesRead))
 	}
+	//调用onRead 函数，进行下游的处理
 
 	c.onRead()
 	c.updateReadBufStats(bytesRead, int64(c.readBuffer.Len()))
