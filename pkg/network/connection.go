@@ -154,7 +154,7 @@ func NewServerConnection(ctx context.Context, rawc net.Conn, stopChan chan struc
 			log.DefaultLogger.Infof("[network] [new server connection] NewServerConnection id = %d, buffer = %d", conn.id, conn.readBuffer.Len())
 		}
 	}
-
+	// 使用网络链接创建一个 filterManager
 	conn.filterManager = newFilterManager(conn)
 
 	return conn
