@@ -47,14 +47,17 @@ func NewStreamClient(ctx context.Context, prot api.Protocol, connection types.Cl
 		Connection: connection,
 		Host:       host,
 	}
+	//从注册的stream工厂中，获取指定协议的工场来创建链接
 
 	if factory, ok := streamFactories[prot]; ok {
 		client.ClientStreamConnection = factory.CreateClientStream(ctx, connection, client, client)
 	} else {
 		return nil
 	}
+	//创建一个链接监听器
 
 	connection.AddConnectionEventListener(client)
+	//创建一个read过滤器
 	connection.FilterManager().AddReadFilter(client)
 	connection.SetNoDelay(true)
 
