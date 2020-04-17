@@ -154,6 +154,7 @@ func (c *client) OnEvent(event api.ConnectionEvent) {
 
 // types.ReadFilter
 // read filter, recv upstream data
+// reaf filter的接口，接收upstream的数据
 func (c *client) OnData(buffer buffer.IoBuffer) api.FilterStatus {
 	c.ClientStreamConnection.Dispatch(buffer)
 
