@@ -422,11 +422,13 @@ func (c *connection) transferWrite(id uint64) {
 }
 
 func (c *connection) doRead() (err error) {
+	//如果当前没有初始化 readbuffer  进行初始化
 	if c.readBuffer == nil {
 		c.readBuffer = buffer.GetIoBuffer(DefaultBufferReadCapacity)
 	}
 
 	var bytesRead int64
+	//从链接中读取数据
 
 	bytesRead, err = c.readBuffer.ReadOnce(c.rawConnection)
 
