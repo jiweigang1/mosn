@@ -57,7 +57,7 @@ func NewStreamClient(ctx context.Context, prot api.Protocol, connection types.Cl
 	//创建一个链接监听器
 
 	connection.AddConnectionEventListener(client)
-	//创建一个read过滤器
+	//Client 本身就是一个 读的Filter ，添加道 filterMananger 中进行数据的读取
 	connection.FilterManager().AddReadFilter(client)
 	connection.SetNoDelay(true)
 
