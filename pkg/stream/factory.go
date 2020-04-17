@@ -43,7 +43,7 @@ func CreateServerStreamConnection(context context.Context, prot api.Protocol, co
 
 	return nil
 }
-//根据协议工场的匹配函数选择协议解析的工场
+//根据协议工场的匹配函数选择协议
 func SelectStreamFactoryProtocol(ctx context.Context, prot string, peek []byte) (types.ProtocolName, error) {
 	var err error
 	var again bool
