@@ -37,10 +37,12 @@ func NewCluster(clusterConfig v2.Cluster) types.Cluster {
 }
 
 // simpleCluster is an implementation of types.Cluster
+// 简单集群，承载下游服务的集群
 type simpleCluster struct {
 	info          *clusterInfo
 	healthChecker types.HealthChecker
 	lbInstance    types.LoadBalancer // load balancer used for this cluster
+	// 下游服务地址的，使用不同的负载策略进行访问
 	hostSet       *hostSet
 	snapshot      atomic.Value
 }
