@@ -570,7 +570,7 @@ func (s *downStream) receive(ctx context.Context, id uint32, phase types.Phase) 
 	log.Proxy.Errorf(s.context, "[proxy] [downstream] unexpected phase cycle time")
 	return types.End
 }
-
+//匹配路由信息
 func (s *downStream) matchRoute() {
 	headers := s.downstreamReqHeaders
 	if s.proxy.routersWrapper == nil || s.proxy.routersWrapper.GetRouters() == nil {
@@ -591,6 +591,7 @@ func (s *downStream) matchRoute() {
 		s.sendHijackReply(types.RouterUnavailableCode, headers)
 		return
 	}
+	// 匹配的路由信息 放入到 matchRoute 当中
 	s.snapshot, s.route = handlerChain.DoNextHandler()
 }
 
